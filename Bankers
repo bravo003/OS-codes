@@ -1,0 +1,96 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    int P, R, i, j, k;
+
+    P = 5;
+    R = 3;
+
+    int allocated[5][3] = {{0, 1, 0},
+                           {2, 0, 0},
+                           {3, 0, 2},
+                           {2, 1, 1},
+                           {0, 0, 2}};
+
+    int max[5][3] = {{7, 5, 3},
+                     {3, 2, 2},
+                     {9, 0, 2},
+                     {2, 2, 2},
+                     {4, 3, 3}};
+
+    int available[3] = {3, 3, 2};
+
+    int f[P], ans[P], ind = 0;
+
+    for (k = 0; k < P; k++)
+    {
+        f[k] = 0;
+    }
+
+    int need[P][R];
+    for (i = 0; i < P; i++)
+    {
+        for (j = 0; j < R; j++)
+        {
+            need[i][j] = max[i][j] - allocated[i][j];
+        }
+    }
+
+    int y = 0;
+    for (k = 0; k < P; k++)
+    {
+        for (i = 0; i < P; i++)
+        {
+            if (f[i] == 0)
+            {
+                int flag = 0;
+                for (j = 0; j < R; j++)
+                {
+                    if (need[i][j] > available[j])
+                    {
+                        flag = 1;
+                        break;
+                    }
+                }
+
+                if (flag == 0)
+                {
+                    ans[ind++] = i;
+                    for (y = 0; y < R; y++)
+                    {
+                        available[y] += allocated[i][y];
+                        f[i] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    int flag = 1;
+
+    for (i = 0; i < P; i++)
+    {
+        if (f[i] == 0)
+        {
+            flag = 0;
+            cout << "The gven sequence is not safe.";
+            break;
+        }
+    }
+
+    if (flag == 1)
+    {
+        cout<<"There is no deadlock :)"<<endl;
+        cout << "Following is the SAFE sequence" << endl;
+
+        for (i = 0; i < P - 1; i++)
+        {
+            cout << "P" << ans[i] << " -> ";
+        }
+        cout << "P" << ans[P - 1] << endl;
+    }
+
+    return 0;
+}
